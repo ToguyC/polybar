@@ -30,7 +30,7 @@
 
 [colors]
 ;background = ${xrdb:color0:#222}
-background = #222
+background = #dd0e1a21
 background-alt = #444
 ;foreground = ${xrdb:color7:#222}
 foreground = #dfdfdf
@@ -38,15 +38,20 @@ foreground-alt = #555
 primary = #ffb52a
 secondary = #e60053
 alert = #bd2c40
+border = #b0d9d8
 
 [bar/example]
 ;monitor = ${env:MONITOR:HDMI-1}
-width = 100%
-height = 30 
-;offset-x = 1%
-;offset-y = 1%
+width = 100%:-24
+height = 32
+offset-x = 12
+offset-y = 12
 radius = 0.0
-fixed-center = false
+fixed-center = true
+
+override-redirect = true
+
+bottom=true
 
 background = ${colors.background}
 foreground = ${colors.foreground}
@@ -54,37 +59,31 @@ foreground = ${colors.foreground}
 line-size = 3
 line-color = #f00
 
-border-size = 4
-border-color = #00000000
+border-size = 2
+border-color = ${colors.border}
+;border-top-size = 0
 
-padding-left = 0
-padding-right = 2
+padding = 2
 
 module-margin-left = 1
 module-margin-right = 2
 
-font-0 = fixed:pixelsize=10;1
-font-1 = FontAwesome:style=Regular:size=10;4 
-font-2 = siji:pixelsize=10;1
+font-0 = SpaceMono:style=Bold:pixelsize=11;1
+font-1 = FontAwesome:style=Regular:size=11;1 
+font-2 = siji:pixelsize=11;1
 
-modules-left = i3
-modules-center = xwindow
-modules-right = filesystem pulseaudio memory cpu battery date
+modules-left = i3 now-playing
+modules-center = 
+;modules-center = xwindow
+;modules-right = pulseaudio memory cpu battery date
+modules-right = pulseaudio battery date
 
-tray-position = right
-tray-padding = 2
-;tray-background = #0063ff
+tray-position = none
 
 ;wm-restack = bspwm
 ;wm-restack = i3
 
 ;override-redirect = true
-
-;scroll-up = bspwm-desknext
-;scroll-down = bspwm-deskprev
-
-;scroll-up = i3wm-wsnext
-;scroll-down = i3wm-wsprev
 
 cursor-click = pointer
 cursor-scroll = ns-resize
@@ -93,15 +92,13 @@ cursor-scroll = ns-resize
 type = internal/xwindow
 label = %title:0:30:...%
 
-[module/filesystem]
-type = internal/fs
-interval = 25
-
-mount-0 = /
-
-label-mounted = %{F#0a81f5}%mountpoint%%{F-}: %percentage_used%%
-label-unmounted = %mountpoint% not mounted
-label-unmounted-foreground = ${colors.foreground-alt}
+[module/now-playing]
+type = custom/script
+tail = true
+;format-prefix = ""
+format = <label>
+exec = /home/toguy/scripts/polybar-now-playing.py
+click-right = "kill -USR1 $(pgrep --oldest --parent %pid%)"
 
 [module/i3]
 ;https://github.com/jaagr/polybar/wiki/Module:-i3
@@ -174,7 +171,7 @@ ws-icon-default = ""
 format = <label-state> <label-mode>
  
 label-mode = %mode%
-label-mode-padding = 2
+label-mode-padding = 1
 label-mode-foreground = #000000
 label-mode-background = #FFBB00
  
@@ -185,11 +182,11 @@ label-mode-background = #FFBB00
 ;   %output%
 ; Default: %icon%  %name%
 ; focused = Active workspace on focused monitor
-label-focused = %icon% %name%
+label-focused = %name%
 label-focused-background = ${colors.background}
 label-focused-foreground = ${colors.foreground}
-label-focused-underline = #fb6e41
-label-focused-padding = 2
+label-focused-underline = ${colors.border}
+label-focused-padding = 1
  
 ; Available tokens:
 ;   %name%
@@ -197,17 +194,17 @@ label-focused-padding = 2
 ;   %index%
 ; Default: %icon%  %name%
 ; unfocused = Inactive workspace on any monitor
-label-unfocused = %icon% %name%
-label-unfocused-padding = 2
+label-unfocused = %name%
+label-unfocused-padding = 1
 label-unfocused-background = ${colors.background}
 label-unfocused-foreground = ${colors.foreground}
-label-unfocused-underline = #8C5300
+label-unfocused-underline = ${colors.background}
  
 ; visible = Active workspace on unfocused monitor
-label-visible = %icon% %name%
+label-visible = %name%
 label-visible-background = ${self.label-focused-background}
 label-visible-underline = ${self.label-focused-underline}
-label-visible-padding = 2
+label-visible-padding = 1
  
 ; Available tokens:
 ;   %name%
@@ -215,10 +212,10 @@ label-visible-padding = 2
 ;   %index%
 ; Default: %icon%  %name%
 ; urgent = Workspace with urgency hint set
-label-urgent = %icon% %name%
+label-urgent = %name%
 label-urgent-background = ${self.label-focused-background}
 label-urgent-foreground = #db104e
-label-urgent-padding = 2
+label-urgent-padding = 1
  
 format-foreground = ${colors.foreground}
 format-background = #00000000
@@ -247,9 +244,10 @@ time = %H:%M
 time-alt = %H:%M:%S
 
 format-prefix = 
-format-prefix-foreground = ${colors.foreground-alt}
 
 label = %date% %time%
+label-underline = ${colors.border}
+format-prefix-foreground = ${colors.foreground-alt}
 
 [module/pulseaudio]
 type = internal/pulseaudio
@@ -295,7 +293,7 @@ ramp-capacity-1-foreground = ${colors.warning}
 ramp-capacity-2 = 
 ramp-capacity-3 = 
 ramp-capacity-4 = 
-ramp-capacity-foreground = ${colors.foreground-alt}
+ramp-capacity-foreground = ${colors.foreground}
 
 animation-charging-0 = 
 animation-charging-1 = 
